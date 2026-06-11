@@ -1,0 +1,6 @@
+A web application that helps users discover local events happening in their area. Users can browse, search, and filter events based on categories such as entertainment, sports, community activities, shopping events, concerts, plays, festivals, charity events, and public gatherings.
+The application will provide event details including date, time, location, category, and description.
+Why This Project?
+•	Useful for community members.
+•	Easy to understand and demonstrate.
+•	Uses all major REST operations (GET, POST, PUT, DELETE).
