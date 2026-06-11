@@ -1,0 +1,19 @@
+Planned API routes:
+•	GET /users — Get all users (admin)
+•	GET /users/:id — Get user by ID
+•	PATCH /users/:id — Update user profile
+•	DELETE /users/:id — Delete user (admin)
+•	GET /events — Get all events
+•	GET /events/:id — Get event by ID
+•	GET /events?category=concert — Filter events by category
+•	POST /events — Create a new event (admin)
+•	PATCH /events/:id — Update an event (admin)
+•	DELETE /events/:id — Delete an event (admin)
+•	GET /categories — Get all categories
+•	GET /categories/:id — Get category by ID
+•	POST /categories — Create a category (admin)
+•	PATCH /categories/:id — Update a category (admin)
+•	DELETE /categories/:id — Delete a category (admin)
+•	POST /saved-events — Save an event for the logged in user
+•	GET /saved-events — Get all saved events for the logged in user
+•	DELETE /saved-events/:eventId — Remove a saved event
