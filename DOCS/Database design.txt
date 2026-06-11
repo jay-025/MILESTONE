@@ -1,0 +1,12 @@
+We have designed 4 tables for this database 
+•	User – This table stores user information
+•	Events - This table stores events information
+•	Category – Grouped events by category
+•	SavedEvents – Connects users and events (many-to-many relationship)
+          (junction table)
+
+Relationship -	Type	
+Category – events -	1:many -	One category can have many events
+Events – savedevents -	1:many -	One events can be saved by many users
+User – savedevents - 1:many -	One user can save many events
+User - events -	Many:many -	Connected through savedevents table
