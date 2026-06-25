@@ -11,8 +11,8 @@ import cors from "cors";
 // Import route files.
 // Each file exports a Router with its own set of endpoints.
 import userRoutes from "./routes/userRoutes";
-// import eventsRoutes from "./routes/eventsRoutes";
-// import categoryRoutes from "./routes/categoryRoutes";
+import eventsRoutes from "./routes/eventsRoutes";
+import categoryRoutes from "./routes/categoryRoutes";
 // Create the Express application.
 const app = express();
 
@@ -33,8 +33,8 @@ app.use(express.json());
 //   router.post("/")  → becomes  POST /users
 //
 app.use("/users", userRoutes);
-// app.use("/events", eventsRoutes);
-// app.use("/categories", categoryRoutes);
+app.use("/events", eventsRoutes);
+app.use("/categories", categoryRoutes);
 // ─── START SERVER ─────────────────────────────────────
 app.listen(3002, () => {
   console.log("Server running on http://localhost:3002");
