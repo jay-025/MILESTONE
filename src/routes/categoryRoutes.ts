@@ -9,27 +9,132 @@ import pool from "../db";
 
 const router = Router();
 
-// ─── GET /  →  Get all categories ───────────────────────
+// GET all categories
 router.get("/", async (_req: Request, res: Response) => {
-  const [rows] = await pool.query("SELECT * FROM category");
-  res.json(rows);
+  try {
+    const [rows] = await pool.query("SELECT * FROM category");
+
+    res.status(200).json(rows);
+  } catch (error) {
+    console.error("Error getting categories:", error);
+
+    res.status(500).json({
+      error: "Failed to get categories",
+    });
+  }
 });
 
-// ─── POST /  →  Create a new category ──────────────────
+// CREATE category
 router.post("/", async (req: Request, res: Response) => {
-  const { name } = req.body;
+  try {
+    const { category_id, name, description, status } = req.body;
 
-  if (!name) {
-    res.status(400).json({ error: "name is required" });
-    return;
+    if (!category_id || !name || !description || !status) {
+      res.status(400).json({
+        error: "category_id, name, description, and status are required",
+      });
+      return;
+    }
+
+    await pool.query(
+      `INSERT INTO category
+       (category_id, name, description, status)
+       VALUES (?, ?, ?, ?)`,
+      [category_id, name, description, status]
+    );
+
+    res.status(201).json({
+      message: "Category created successfully",
+    });
+  } catch (error) {
+    console.error("Error creating category:", error);
+
+    res.status(500).json({
+      error: "Failed to create category",
+    });
   }
+});
 
-  const [result]: any = await pool.query(
-    "INSERT INTO category (name) VALUES (?)",
-    [name]
-  );
+// UPDATE category
+router.patch("/:id", async (req: Request, res: Response) => {
+  try {
+    const categoryId = Number(req.params.id);
+    const { name, description, status } = req.body;
 
-  res.status(201).json({ id: result.insertId, name });
+    if (Number.isNaN(categoryId)) {
+      res.status(400).json({
+        error: "Category ID must be a number",
+      });
+      return;
+    }
+
+    if (!name || !description || !status) {
+      res.status(400).json({
+        error: "name, description, and status are required",
+      });
+      return;
+    }
+
+    const [result]: any = await pool.query(
+      `UPDATE category
+       SET name = ?, description = ?, status = ?
+       WHERE category_id = ?`,
+      [name, description, status, categoryId]
+    );
+
+    if (result.affectedRows === 0) {
+      res.status(404).json({
+        error: "Category not found",
+      });
+      return;
+    }
+
+    res.status(200).json({
+      message: "Category updated successfully",
+    });
+  } catch (error) {
+    console.error("Error updating category:", error);
+
+    res.status(500).json({
+      error: "Failed to update category",
+    });
+  }
+});
+
+// DELETE category
+router.delete("/:id", async (req: Request, res: Response) => {
+  try {
+    const categoryId = Number(req.params.id);
+
+    if (Number.isNaN(categoryId)) {
+      res.status(400).json({
+        error: "Category ID must be a number",
+      });
+      return;
+    }
+
+    const [result]: any = await pool.query(
+      "DELETE FROM category WHERE category_id = ?",
+      [categoryId]
+    );
+
+    if (result.affectedRows === 0) {
+      res.status(404).json({
+        error: "Category not found",
+      });
+      return;
+    }
+
+    res.status(200).json({
+      message: "Category deleted successfully",
+    });
+  } catch (error) {
+    console.error("Error deleting category:", error);
+
+    res.status(500).json({
+      error: "Failed to delete category",
+    });
+  }
 });
 
 export default router;
