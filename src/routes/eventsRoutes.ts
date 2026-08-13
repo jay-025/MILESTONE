@@ -12,6 +12,9 @@ import { Router, Request, Response } from "express";
 // "../db" means "go up one folder (from routes/ to src/) and find db.ts".
 import pool from "../db";
 
+// Import the authentication middleware to protect routes.
+import authenticateToken from "../middleware/auth";
+
 // Create a new Router instance.
 // This works exactly like "app" but is designed to be plugged into the main app later.
 const router = Router();
@@ -20,10 +23,10 @@ const router = Router();
 // Notice: we write "/" not "/events".
 // The "/events" prefix will be added in index.ts when we register this router.
 // So "/" here becomes "/events" in the final API.
-router.get("/", async (_req: Request, res: Response) => {
+router.get("/", authenticateToken, async (_req: Request, res: Response) => {
   try {
     // Query the database for all events.
-    const [rows] = await pool.query("SELECT * FROM events");
+    const [rows] = await pool.query("SELECT * FROM `events`");
 
     // Send the results back as JSON.
     res.status(200).json(rows);
@@ -38,7 +41,7 @@ router.get("/", async (_req: Request, res: Response) => {
 
 // ─── POST /  →  Create a new event ─────────────────────
 // Again, "/" here becomes "/events" because of the prefix in index.ts.
-router.post("/", async (req: Request, res: Response) => {
+router.post("/", authenticateToken, async (req: Request, res: Response) => {
   try {
     // Get the event information from the request body.
     const {
@@ -99,7 +102,7 @@ router.post("/", async (req: Request, res: Response) => {
 });
 
 // ─── PATCH /:id  →  Update an existing event ───────────
-router.patch("/:id", async (req: Request, res: Response) => {
+router.patch("/:id", authenticateToken, async (req: Request, res: Response) => {
   try {
     // Get the event ID from the URL.
     const eventId = Number(req.params.id);
@@ -177,7 +180,7 @@ router.patch("/:id", async (req: Request, res: Response) => {
 });
 
 // ─── DELETE /:id  →  Delete an event ───────────────────
-router.delete("/:id", async (req: Request, res: Response) => {
+router.delete("/:id", authenticateToken, async (req: Request, res: Response) => {
   try {
     // Get the event ID from the URL.
     const eventId = Number(req.params.id);
@@ -219,3 +222,15 @@ router.delete("/:id", async (req: Request, res: Response) => {
 
 // Export the router so index.ts can import and register it.
 export default router;
+
+// example
+/*{
+  "idevents": 10,
+  "name": "Technology Conference",
+  "type": "Conference",
+  "date": "2026-08-15",
+  "location": "Waterloo",
+  "description": "Technology conference for developers",
+  "ticket_price": 25,
+  "category_id": 1
+}*/
