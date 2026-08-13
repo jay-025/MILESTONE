@@ -7,10 +7,13 @@
 import { Router, Request, Response } from "express";
 import pool from "../db";
 
+// Import the authentication middleware to protect routes.
+import authenticateToken from "../middleware/auth";
+
 const router = Router();
 
 // GET all categories
-router.get("/", async (_req: Request, res: Response) => {
+router.get("/", authenticateToken, async (_req: Request, res: Response) => {
   try {
     const [rows] = await pool.query("SELECT * FROM category");
 
@@ -25,7 +28,7 @@ router.get("/", async (_req: Request, res: Response) => {
 });
 
 // CREATE category
-router.post("/", async (req: Request, res: Response) => {
+router.post("/", authenticateToken, async (req: Request, res: Response) => {
   try {
     const { category_id, name, description, status } = req.body;
 
@@ -56,7 +59,7 @@ router.post("/", async (req: Request, res: Response) => {
 });
 
 // UPDATE category
-router.patch("/:id", async (req: Request, res: Response) => {
+router.patch("/:id", authenticateToken, async (req: Request, res: Response) => {
   try {
     const categoryId = Number(req.params.id);
     const { name, description, status } = req.body;
@@ -102,7 +105,7 @@ router.patch("/:id", async (req: Request, res: Response) => {
 });
 
 // DELETE category
-router.delete("/:id", async (req: Request, res: Response) => {
+router.delete("/:id", authenticateToken, async (req: Request, res: Response) => {
   try {
     const categoryId = Number(req.params.id);
 
@@ -138,3 +141,13 @@ router.delete("/:id", async (req: Request, res: Response) => {
 });
 
 export default router;
+
+
+
+// example
+/*{
+  "category_id": 10,
+  "name": "Technology",
+  "description": "Technology workshops",
+  "status": "Active"
+}*/

@@ -7,6 +7,10 @@
 
 import express from "express";
 import cors from "cors";
+import dotenv from "dotenv";
+
+// Load environment variables from .env file into process.env
+dotenv.config();
 
 // Import route files.
 // Each file exports a Router with its own set of endpoints.
