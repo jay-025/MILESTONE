@@ -1,153 +1,22 @@
-// ─────────────────────────────────────────────────────────
-//  CATEGORY ROUTES
-//  Handles all endpoints related to categories.
-//  Same pattern as userRoutes.ts Router + pool + export.
-// ─────────────────────────────────────────────────────────
+import { Router } from "express";
 
-import { Router, Request, Response } from "express";
-import pool from "../db";
-
-// Import the authentication middleware to protect routes.
 import authenticateToken from "../middleware/auth";
+
+import {
+  getCategories,
+  addCategory,
+  editCategory,
+  removeCategory,
+} from "../controllers/categoryController";
 
 const router = Router();
 
-// GET all categories
-router.get("/", authenticateToken, async (_req: Request, res: Response) => {
-  try {
-    const [rows] = await pool.query("SELECT * FROM category");
+router.get("/", authenticateToken, getCategories);
 
-    res.status(200).json(rows);
-  } catch (error) {
-    console.error("Error getting categories:", error);
+router.post("/", authenticateToken, addCategory);
 
-    res.status(500).json({
-      error: "Failed to get categories",
-    });
-  }
-});
+router.patch("/:id", authenticateToken, editCategory);
 
-// CREATE category
-router.post("/", authenticateToken, async (req: Request, res: Response) => {
-  try {
-    const { category_id, name, description, status } = req.body;
-
-    if (!category_id || !name || !description || !status) {
-      res.status(400).json({
-        error: "category_id, name, description, and status are required",
-      });
-      return;
-    }
-
-    await pool.query(
-      `INSERT INTO category
-       (category_id, name, description, status)
-       VALUES (?, ?, ?, ?)`,
-      [category_id, name, description, status]
-    );
-
-    res.status(201).json({
-      message: "Category created successfully",
-    });
-  } catch (error) {
-    console.error("Error creating category:", error);
-
-    res.status(500).json({
-      error: "Failed to create category",
-    });
-  }
-});
-
-// UPDATE category
-router.patch("/:id", authenticateToken, async (req: Request, res: Response) => {
-  try {
-    const categoryId = Number(req.params.id);
-    const { name, description, status } = req.body;
-
-    if (Number.isNaN(categoryId)) {
-      res.status(400).json({
-        error: "Category ID must be a number",
-      });
-      return;
-    }
-
-    if (!name || !description || !status) {
-      res.status(400).json({
-        error: "name, description, and status are required",
-      });
-      return;
-    }
-
-    const [result]: any = await pool.query(
-      `UPDATE category
-       SET name = ?, description = ?, status = ?
-       WHERE category_id = ?`,
-      [name, description, status, categoryId]
-    );
-
-    if (result.affectedRows === 0) {
-      res.status(404).json({
-        error: "Category not found",
-      });
-      return;
-    }
-
-    res.status(200).json({
-      message: "Category updated successfully",
-    });
-  } catch (error) {
-    console.error("Error updating category:", error);
-
-    res.status(500).json({
-      error: "Failed to update category",
-    });
-  }
-});
-
-// DELETE category
-router.delete("/:id", authenticateToken, async (req: Request, res: Response) => {
-  try {
-    const categoryId = Number(req.params.id);
-
-    if (Number.isNaN(categoryId)) {
-      res.status(400).json({
-        error: "Category ID must be a number",
-      });
-      return;
-    }
-
-    const [result]: any = await pool.query(
-      "DELETE FROM category WHERE category_id = ?",
-      [categoryId]
-    );
-
-    if (result.affectedRows === 0) {
-      res.status(404).json({
-        error: "Category not found",
-      });
-      return;
-    }
-
-    res.status(200).json({
-      message: "Category deleted successfully",
-    });
-  } catch (error) {
-    console.error("Error deleting category:", error);
-
-    res.status(500).json({
-      error: "Failed to delete category",
-    });
-  }
-});
+router.delete("/:id", authenticateToken, removeCategory);
 
 export default router;
-
-
-
-// example
-/*{
-  "category_id": 10,
-  "name": "Technology",
-  "description": "Technology workshops",
-  "status": "Active"
-}*/
