@@ -73,7 +73,7 @@ function Login() {
   return (
     <div className="auth-page">
       <div className="auth-card">
-        <h1>EventSphere</h1>
+        <h1>EventManager</h1>
 
         <p
           style={{

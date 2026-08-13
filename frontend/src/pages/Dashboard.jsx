@@ -28,7 +28,7 @@ function Dashboard() {
       {/* DASHBOARD */}
       <div className="dashboard-card">
 
-        <h2>Welcome to EventSphere</h2>
+        <h2>Welcome to EventManager</h2>
 
         <p>
           Your Event Management System
@@ -93,7 +93,7 @@ function Dashboard() {
       {/* FOOTER */}
       <div className="dashboard-footer">
         <p>
-          EventSphere © 2026 | Event Management System
+          EventManager © 2026 | Event Management System
         </p>
       </div>
 
