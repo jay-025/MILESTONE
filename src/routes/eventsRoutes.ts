@@ -71,7 +71,7 @@ router.post("/", authenticateToken, async (req: Request, res: Response) => {
       return;
     }
 
-    // Insert into the database.
+    // Insert into the database. The ? placeholders prevent SQL injection.
     await pool.query(
       `INSERT INTO events
        (idevents, name, type, date, location, description, ticket_price, category_id)
